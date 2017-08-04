@@ -10,7 +10,7 @@ require_once "../auth/keys.php";
 use iForm\Auth\iFormTokenResolver;
 
 global $client,$secret;
-$server = 'support19';
+$server = '####';
 $tokenUrl = 'https://' . $server . '.iformbuilder.com/exzact/api/oauth/token';
 
 //::::::::::::::  FETCH ACCESS TOKEN   ::::::::::::::
@@ -26,9 +26,15 @@ $profileRequestHeaders = (get_headers($profileListUrl)[4]);
 $finalProfileCount = substr($profileRequestHeaders, -2, 1000);
 echo("Number of Profiles:" . $finalProfileCount . "\r\n");
 
-//:::::::::::::: Use the total count of profiles to beging looping through each one ::::::::::::::
+//:::::::::::::: Use the total count of profiles to begin looping through each one ::::::::::::::
 
 for ($i=0; $i<$finalProfileCount; $i++){
+
+  //:::::::::::::: Get a new access token for every profile we go through to keep it from expiring ::::::::::::::
+  $tokenFetcher = new iFormTokenResolver($tokenUrl, $client, $secret);
+  $token = $tokenFetcher->getToken();
+
+
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, "https://" . $server . ".iformbuilder.com/exzact/api/v60/profiles?limit=1&offset=$i");
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -49,6 +55,7 @@ for ($i=0; $i<$finalProfileCount; $i++){
     foreach($returnProfile as $activeProfile) {
     $activeProfile = $returnProfile[0]['id'];
     print_r("Active Profile: " . $activeProfile . "\r\n");
+    print_r("Access Token: " . $token . "\r\n");
   }
 
     //:::::::::::::: Get total number of pages in the profile beyond default reponse by parsing out the response header Total-Count ::::::::::::::
