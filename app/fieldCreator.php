@@ -23,7 +23,7 @@ $token = $tokenFetcher->getToken();
 //:::::::::::::: Get total number of profiles in the DB beyond default reponse by parsing out the response header Total-Count ::::::::::::::
 $profileListUrl = "https://" . $server . ".iformbuilder.com/exzact/api/v60/profiles?limit=1&access_token=" . $token;
 $profileRequestHeaders = (get_headers($profileListUrl)[4]);
-$finalProfileCount = substr($profileRequestHeaders, -2, 1000);
+$finalProfileCount = = preg_split("/[\s,]+/", $profileRequestHeaders)[1];
 echo("Number of Profiles:" . $finalProfileCount . "\r\n");
 
 //:::::::::::::: Use the total count of profiles to begin looping through each one ::::::::::::::
@@ -61,7 +61,7 @@ for ($i=0; $i<$finalProfileCount; $i++){
     //:::::::::::::: Get total number of pages in the profile beyond default reponse by parsing out the response header Total-Count ::::::::::::::
     $pageListUrl = "https://" . $server . ".iformbuilder.com/exzact/api/v60/profiles/$activeProfile/pages?limit=1&access_token=" . $token;
     $pageRequestHeaders = (get_headers($pageListUrl)[4]);
-    $finalPageCount = substr($pageRequestHeaders, -2, 1000);
+    $finalPageCount = = preg_split("/[\s,]+/", $pageRequestHeaders)[1];
     echo("Number of Total Forms:" . $finalPageCount . "\r\n");
 
 
